@@ -50,3 +50,18 @@ Use `eas build --platform ios` after configuring Apple signing and the required 
 ## Repository status
 
 The source files in this repository are a first implementation, not a finished public AI service. The app build and backend integration still need verification.
+
+## Optional AI backend service
+
+A small OpenAI-compatible proxy now lives in `backend/`. It keeps the provider key on the server rather than inside the mobile app.
+
+### Deploy with a Docker host
+
+- Use `backend/` as the service root directory, or build from the repository root with `backend/Dockerfile`.
+- Set the environment variables from `backend/.env.example` in the hosting dashboard.
+- Set `AI_API_KEY` to a valid provider API key; never commit the real key.
+- Set `AI_BASE_URL` to the provider's OpenAI-compatible API base URL and `AI_MODEL` to a model supported by that provider.
+- Confirm `https://YOUR-SERVICE/health` returns JSON with `ok: true` and `configured: true`.
+- In Medhas.ai Settings, enter `https://YOUR-SERVICE` as the backend URL.
+
+The backend forwards chat requests to the configured provider. It does not train or host a model itself. Provider usage may incur charges. Before public release, add authentication, per-user rate limits, request quotas, and monitoring; the current proxy is a development milestone, not a public multi-user production service.

@@ -1,0 +1,60 @@
+name: Medhas.ai Mobile CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Install and validate Expo app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Check Expo project configuration
+        run: npx expo config --type public
+      - name: TypeScript check
+        run: npx tsc --noEmit
+      - name: Export Android bundle
+        run: npx expo export --platform android
+      - name: Upload JS export for inspection
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: medhas-ai-android-js-export
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  eas-android-apk:
+    name: Request EAS Android APK build (optional)
+    if: ${{ github.event_name == 'workflow_dispatch' && secrets.EXPO_TOKEN != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Install EAS CLI
+        run: npm install --global eas-cli
+      - name: Request APK build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --profile preview --non-interactive

@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Medhas.ai",
+    "slug": "medhas-ai-mobile",
+    "scheme": "medhasai",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      "expo-document-picker",
+      "expo-image-picker"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ai.medhas.mobile"
+    },
+    "android": {
+      "package": "ai.medhas.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#101426"
+      }
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -22,13 +22,14 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
       - name: Check Expo project configuration
         run: npx expo config --type public
-      - name: TypeScript check
-        run: npx tsc --noEmit
+      # Expo Router generates typed-route declarations during export. Export before tsc.
       - name: Export Android bundle
         run: npx expo export --platform android
+      - name: TypeScript check
+        run: npx tsc --noEmit
 
   build-android-apk:
     name: Build installable Android debug APK
@@ -47,7 +48,7 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
       - name: Generate native Android project
         run: npx expo prebuild --platform android --non-interactive
       - name: Build debug APK
